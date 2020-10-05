@@ -1,6 +1,10 @@
-!data/labels.txt
 
+data/*
+!data/labels.txt
+!data/train.txt
+!data/test.txt
+!data/dev.txt
 germeval-model/
 venv/
 logs/
-data/
+s800/

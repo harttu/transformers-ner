@@ -1,0 +1,5 @@
+B-Species
+B-Strain
+I-Species
+I-Strain
+O
