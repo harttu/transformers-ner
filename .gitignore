@@ -6,5 +6,10 @@ data/*
 !data/dev.txt
 germeval-model/
 venv/
-logs/
-s800/
+logs/*
+s800/*
+s800Data
+models/*
+venv_transformers_/*
+runs/*
+jupyter.*

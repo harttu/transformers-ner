@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --job-name=example
 #SBATCH --account=Project_2001426
-#SBATCH --partition=gputest
-#SBATCH --time=00:15:00
+#SBATCH --partition=gpu
+#SBATCH --time=02:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=10
 #SBATCH --mem-per-cpu=8000
@@ -10,18 +10,25 @@
 #SBATCH -o logs/%j.out
 #SBATCH -e logs/%j.err
 
-set -euo pipefail
+#set -euo pipefail
 
 rm -f logs/latest.out logs/latest.err
 ln -s $SLURM_JOBID.out logs/latest.out
 ln -s $SLURM_JOBID.err logs/latest.err
 
-module load gcc/8.3.0 cuda/10.1.168
+#module load gcc/8.3.0 cuda/10.1.168
 
-
+module purge
+module load python-data
 source venv_transformers_/bin/activate
 #python3 scripts/preprocess.py data/dev.txt.tmp $BERT_MODEL $MAX_LENGTH  > data/dev.txt
-echo "dollar1 is $1"
+
+batch_size=32
+learning_rate="0.001"
+epochs=1
+max_seq_length=128
+output_dir="./models/s800_1"
+
 
 for i in "$@"
 do
@@ -78,7 +85,7 @@ BATCH_SIZE=32
 NUM_EPOCHS=3
 SAVE_STEPS=750
 SEED=1
-DATADIR="./data/s800SmallTrain/" #/conll/"
+DATADIR="./data/" #s800SmallTrain/" #/conll/"
 LABELS="${DATADIR}labels.txt"
 LEARNING_RATE="0.001"
 
@@ -103,4 +110,4 @@ python3 run_tf_ner.py --data_dir $DATADIR \
 --do_predict \
 --overwrite_output_dir 
 --from_pt True\
-#srun myprog <options>
+

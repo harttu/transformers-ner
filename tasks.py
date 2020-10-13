@@ -57,13 +57,17 @@ class NER(TokenClassificationTask):
                 logger.warning("Maximum sequence length exceeded: No prediction for '%s'.", line.split()[0])
 
     def get_labels(self, path: str) -> List[str]:
+        print("NER - GET_LABELS")
         if path:
+            print("\tUSING:"+path)
             with open(path, "r") as f:
                 labels = f.read().splitlines()
             if "O" not in labels:
                 labels = ["O"] + labels
+            print("\t\tRETURNING:"+str(labels))
             return labels
         else:
+            print("\tUSING HARDCODED")
             return ["O", "B-MISC", "I-MISC", "B-PER", "I-PER", "B-ORG", "I-ORG", "B-LOC", "I-LOC"]
 
 
@@ -73,13 +77,17 @@ class Chunk(NER):
         super().__init__(label_idx=-2)
 
     def get_labels(self, path: str) -> List[str]:
+        print("CHUNK - GET_LABELS")
         if path:
+            print("\tUSING:"+path)
             with open(path, "r") as f:
                 labels = f.read().splitlines()
             if "O" not in labels:
                 labels = ["O"] + labels
+            print("\t\t"+str(labels))
             return labels
         else:
+            print("\tUSING HARDCODED")
             return [
                 "O",
                 "B-ADVP",
@@ -138,10 +146,13 @@ class POS(TokenClassificationTask):
             example_id += 1
 
     def get_labels(self, path: str) -> List[str]:
+        print("POS-GETLABELS")
         if path:
+            print("\tUSING:"+path)
             with open(path, "r") as f:
                 return f.read().splitlines()
         else:
+            print("\tUSING HARDCODED")
             return [
                 "ADJ",
                 "ADP",

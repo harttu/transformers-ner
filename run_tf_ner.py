@@ -133,7 +133,11 @@ def main():
 
     # Prepare Token Classification task
     labels = token_classification_task.get_labels(data_args.labels)
+    print("LABELS:")
+    print(labels)
     label_map: Dict[int, str] = {i: label for i, label in enumerate(labels)}
+    print("LABEL_MAP:")
+    print(label_map)
     num_labels = len(labels)
 
     # Load pretrained model and tokenizer
@@ -149,6 +153,8 @@ def main():
         label2id={label: i for i, label in enumerate(labels)},
         cache_dir=model_args.cache_dir,
     )
+    print("CONFIG")
+    print(config)
     tokenizer = AutoTokenizer.from_pretrained(
         model_args.tokenizer_name if model_args.tokenizer_name else model_args.model_name_or_path,
         cache_dir=model_args.cache_dir,
@@ -158,11 +164,11 @@ def main():
     with training_args.strategy.scope():
         model = TFAutoModelForTokenClassification.from_pretrained(
             model_args.model_name_or_path,
-            from_pt=bool(".bin" in model_args.model_name_or_path),
+            from_pt=True,#bool(".bin" in model_args.model_name_or_path),
             config=config,
             cache_dir=model_args.cache_dir,
         )
-
+    print("SETTING DATASETS")
     # Get datasets
     train_dataset = (
         TFTokenClassificationDataset(
@@ -216,21 +222,51 @@ def main():
             "f1": f1_score(out_label_list, preds_list),
         }
 
+    """
+    # Prepare optimizer and schedule (linear warmup and decay)
+    no_decay = ["bias", "LayerNorm.weight"]
+    optimizer_grouped_parameters = [
+        {
+            "params": [p for n, p in model.named_parameters() if not any(nd in n for nd in no_decay)],
+            "weight_decay": args.weight_decay,
+        },
+        {"params": [p for n, p in model.named_parameters() if any(nd in n for nd in no_decay)], "weight_decay": 0.0},
+    ]
+    optimizer = AdamW(optimizer_grouped_parameters, lr=args.learning_rate, eps=args.adam_epsilon)
+    scheduler = get_linear_schedule_with_warmup(
+        optimizer, num_warmup_steps=args.warmup_steps, num_training_steps=t_total
+    )
+    """
+
+    import tensorflow as tf
+
+    initial_learning_rate=0.001
+    decay_steps=10000
+    print("INITIALIZING TRAINER")
     # Initialize our Trainer
     trainer = TFTrainer(
         model=model,
+        #optimizers=(tf.keras.optimizers.Adam(
+        #learning_rate=initial_learning_rate, beta_1=0.9, 
+        #beta_2=0.999, epsilon=1e-07, amsgrad=False,
+        #name='Adam'),tf.keras.optimizers.schedules.PolynomialDecay(
+        #initial_learning_rate, decay_steps, 
+        #end_learning_rate=0.0001, power=1.0,
+        #cycle=False, name=None
+        #)),
         args=training_args,
         train_dataset=train_dataset.get_dataset() if train_dataset else None,
         eval_dataset=eval_dataset.get_dataset() if eval_dataset else None,
         compute_metrics=compute_metrics,
     )
-
+    print("TRAINING")
     # Training
     if training_args.do_train:
         trainer.train()
         trainer.save_model()
         tokenizer.save_pretrained(training_args.output_dir)
-
+    
+    print("EVALUATING")
     # Evaluation
     results = {}
     if training_args.do_eval:
@@ -249,6 +285,7 @@ def main():
             results.update(result)
 
     # Predict
+    print("PREDICTING")
     if training_args.do_predict:
         test_dataset = TFTokenClassificationDataset(
             token_classification_task=token_classification_task,
