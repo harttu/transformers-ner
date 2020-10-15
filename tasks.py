@@ -32,6 +32,7 @@ class NER(TokenClassificationTask):
                         words = []
                         labels = []
                 else:
+                    #splits = line.split(" ")
                     splits = line.split(" ")
                     words.append(splits[0])
                     if len(splits) > 1:

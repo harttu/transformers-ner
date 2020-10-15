@@ -36,6 +36,9 @@ from transformers import (
 from utils_ner import Split, TFTokenClassificationDataset, TokenClassificationTask
 
 
+import transformers
+transformers.logging.set_verbosity_info()
+
 logger = logging.getLogger(__name__)
 
 
@@ -118,11 +121,23 @@ def main():
         )
 
     # Setup logging
+    
     logging.basicConfig(
         format="%(asctime)s - %(levelname)s - %(name)s -   %(message)s",
         datefmt="%m/%d/%Y %H:%M:%S",
-        level=logging.INFO,
+        level=logging.DEBUG,
     )
+    """
+    logging.basicConfig(
+	filename="/scratch/project_2001426/harttu/july-2020/transformers-ner/test.log",
+        format="%(asctime)s - %(levelname)s - %(name)s -   %(message)s",
+        datefmt="%m/%d/%Y %H:%M:%S",
+        level=logging.DEBUG,
+        filemode='w'
+    )
+    """
+    logger.info("FROM run_tf_ner.py")
+    
     logger.info(
         "n_replicas: %s, distributed training: %s, 16-bits training: %s",
         training_args.n_replicas,
