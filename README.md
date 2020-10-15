@@ -9,6 +9,7 @@ Fork fro Huggingface transformers example
 1. Modify the script to use tab as separator
 2. Take os.path.join in use whenever possible
 3. Fix bool - bug in trainer part
+4. learning rate from as a parameter ( command line )
 
 ## Installing on Puhti
 The following should work at least for running slurm jobs. Interactive session might require something extra
