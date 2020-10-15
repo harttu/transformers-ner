@@ -2,11 +2,17 @@
 
 set -euo pipefail
 
-# dirs should already exist, if not uncomment
-#echo "#############################################"
-#echo "##SETTING DIRS                             ##"
+echo "############################################"
+echo "##INSTALLIG ON PUHTI                      ##"
+echo "Skipping jupyter installation by default    "
+echo "Uncomment lines in venv part to install it  "
+sleep 1
 
-#mkdir logs models data 
+# dirs should already exist, if not uncomment
+echo "#############################################"
+echo "##SETTING DIRS                             ##"
+
+mkdir logs models data 
 
 # it is a good idea to have a project specific name for venv
 # in Puhti, because jupyter requires it
