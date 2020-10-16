@@ -1,5 +1,5 @@
 # transformers-ner
-Fork fro Huggingface transformers example
+Fork from Huggingface transformers example
 
 ## Installing on Puhti
 The following should work at least for running slurm jobs. Interactive session might require something extra.
