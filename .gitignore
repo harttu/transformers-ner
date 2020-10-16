@@ -11,7 +11,7 @@ data/*
 germeval-model/
 logs/*
 models/*
-venv_transformers_/*
+venv_transformers_ner/*
 runs/*
 jupyter.*
 latest.err

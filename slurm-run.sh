@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --job-name=example
 #SBATCH --account=Project_2001426
-#SBATCH --partition=gpu
-#SBATCH --time=03:00:00
+#SBATCH --partition=gputest
+#SBATCH --time=00:15:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=10
 #SBATCH --mem-per-cpu=8000
@@ -20,9 +20,12 @@ set -euo pipefail
 module purge
 module load python-data
 module load gcc/8.3.0 cuda/10.1.168
-source venv_transformers_/bin/activate
+source venv_transformers_ner/bin/activate
 #python3 scripts/preprocess.py data/dev.txt.tmp $BERT_MODEL $MAX_LENGTH  > data/dev.txt
 
+
+#
+# default values
 batch_size=16
 learning_rate="0.001"
 epochs=4
@@ -85,15 +88,15 @@ if [ "$DEBUG" == "false" ]; then
   ln -s logs/$SLURM_JOBID.err latest.err
 fi
 
-MAX_LENGTH=128
+#MAX_LENGTH=128
 #BERT_MODEL=bert-base-multilingual-cased
 #BERT_MODEL="monologg/biobert_v1.0_pubmed_pmc"
 #BERT_MODEL="monologg/biobert_v1.1_pubmed"
 #BERT_MODEL="./models/biobertTorch"
-model="./models/biobertTorch"
+#model="./models/biobertTorch"
 
 #BERT_MODEL="./biobert/biobert_v1.0_pubmed_pmc"
-OUTPUT_DIR="./models/s800_1"
+#OUTPUT_DIR="./models/s800_1"
 #BATCH_SIZE=32
 #NUM_EPOCHS=3
 SAVE_STEPS=750
@@ -102,7 +105,7 @@ SEED=1
 #LABELS="${DATADIR}labels.txt"
 LEARNING_RATE="0.001"
 
-rm -rf $OUTPUT_DIR
+#rm -rf $OUTPUT_DIR
 
 labels=$data_dir"labels.txt"
 echo "Using the following parameters"
@@ -112,6 +115,8 @@ echo "maximum sequence length: $max_seq_length"
 echo "epochs: $epochs"
 echo "data: $data_dir"
 echo "labels: $labels"
+echo "model: $model"
+echo "output dir: $output_dir"
 
 echo "Sample from conll:"
 head -5 $data_dir"train.txt"

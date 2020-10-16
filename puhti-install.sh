@@ -6,7 +6,7 @@ echo "############################################"
 echo "##INSTALLIG ON PUHTI                      ##"
 echo "Skipping jupyter installation by default    "
 echo "Uncomment lines in venv part to install it  "
-sleep 3
+sleep 5
 
 # dirs should already exist, if not uncomment
 echo "#############################################"
@@ -25,9 +25,9 @@ echo "Loading python-data module"
 module purge
 module load python-data
 
-echo "Setting virtual environment"
-python3 -m venv venv_transformers
-source venv_transformers/bin/activate 
+echo "Setting virtual environmenti ( this can't a while )"
+python3 -m venv venv_transformers_ner
+source venv_transformers_ner/bin/activate 
 
 echo "Installing requirements"
 python3 -m pip install -r requirements.txt
