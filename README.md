@@ -20,6 +20,6 @@ sbatch slurm-run.sh -bs=8 -msl=256 -e=2 -m=./models/monologg/biobert_v1.1_pubmed
 1. Modify the script to use tab as separator
 2. Take os.path.join in use whenever possible
 3. Fix bool - bug in trainer part
-4. learning rate from as a parameter ( command line )
+##4. learning rate from as a parameter ( command line )
 
 

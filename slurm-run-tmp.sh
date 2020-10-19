@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --job-name=example
 #SBATCH --account=Project_2001426
-#SBATCH --partition=gpu
-#SBATCH --time=03:00:00
+#SBATCH --partition=gg
+#SBATCH --time=04:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=10
 #SBATCH --mem-per-cpu=8000

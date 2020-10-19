@@ -4,14 +4,26 @@ from typing import List, TextIO, Union
 
 from conllu import parse_incr
 
+
+##
+# InputExample is a simple class that holds unique guid and list of words and labels(optional)
+# !note train and dev should contain labels not test
+# Split is is Enum of train, dev and test such as train -> "train"
+# TokenClassifiction is a base class that has methods: read_examples_from_file, get_labels and convert_examples_to_features
+#
+# read_examples_from_file - needs to be implemented 
+# get_labels - needs - needs to be implemented
+#
+# convert_examples_to_features - BERT ready method for converting the data into BERT-friendly features with  a help of tokenizer
+
 from utils_ner import InputExample, Split, TokenClassificationTask
 
 
 logger = logging.getLogger(__name__)
 
-
 class NER(TokenClassificationTask):
     def __init__(self, label_idx=-1):
+        # WE don't use the below
         # in NER datasets, the last column is usually reserved for NER label
         self.label_idx = label_idx
 
@@ -25,7 +37,10 @@ class NER(TokenClassificationTask):
             words = []
             labels = []
             for line in f:
+                #
+                # the sample is about to change
                 if line.startswith("-DOCSTART-") or line == "" or line == "\n":
+                    # have we gathered words by now
                     if words:
                         examples.append(InputExample(guid=f"{mode}-{guid_index}", words=words, labels=labels))
                         guid_index += 1
@@ -33,10 +48,11 @@ class NER(TokenClassificationTask):
                         labels = []
                 else:
                     #splits = line.split(" ")
-                    splits = line.split(" ")
-                    words.append(splits[0])
+                    splits = line.split("\t")
+                    words.append(splits[0]) # this is the word
                     if len(splits) > 1:
-                        labels.append(splits[self.label_idx].replace("\n", ""))
+                        labels.append(splits[1].replace("\n","")) # this is the label
+                        #labels.append(splits[self.label_idx].replace("\n", ""))
                     else:
                         # Examples could have no label for mode = "test"
                         labels.append("O")
@@ -49,6 +65,7 @@ class NER(TokenClassificationTask):
         for line in test_input_reader:
             if line.startswith("-DOCSTART-") or line == "" or line == "\n":
                 writer.write(line)
+                # if for some reason exmple_id is not present
                 if not preds_list[example_id]:
                     example_id += 1
             elif preds_list[example_id]:
@@ -71,7 +88,7 @@ class NER(TokenClassificationTask):
             print("\tUSING HARDCODED")
             return ["O", "B-MISC", "I-MISC", "B-PER", "I-PER", "B-ORG", "I-ORG", "B-LOC", "I-LOC"]
 
-
+"""
 class Chunk(NER):
     def __init__(self):
         # in CONLL2003 dataset chunk column is second-to-last
@@ -173,3 +190,4 @@ class POS(TokenClassificationTask):
                 "VERB",
                 "X",
             ]
+"""

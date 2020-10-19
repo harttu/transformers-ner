@@ -87,6 +87,12 @@ class DataTrainingArguments:
             "than this will be truncated, sequences shorter will be padded."
         },
     )
+    """
+    learning_rate: Optional[str] = field(
+        default="5e-5",
+        metadata={"help": "learning rate used in training: in e.g  format"}
+    )
+    """
     overwrite_cache: bool = field(
         default=False, metadata={"help": "Overwrite the cached training and evaluation sets"}
     )
