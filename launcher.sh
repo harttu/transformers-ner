@@ -2,17 +2,17 @@
 
 set -euo pipefail
 
-BS=16
-MSL=256
-E=3
+BS=32
+MSL=320
+E=2
 MODEL="biobert_v1.1_pubmed_pytorch/"
 DATA="s800_tabs_small/"
-LR="5e-5"
+LR="4e-5"
 
-RUNTYPE="gpu"
-RUNTIME="03:00:00"
-#RUNTYPE="gputest"
-#RUNTIME="00:15:00"
+#RUNTYPE="gpu"
+#RUNTIME="03:00:00"
+RUNTYPE="gputest"
+RUNTIME="00:15:00"
 
 echo "Running with the following arguments"
 echo "####################################"

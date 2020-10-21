@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --job-name=example
 #SBATCH --account=Project_2001426
-#SBATCH --partition=gpu
-#SBATCH --time=03:00:00
+#SBATCH --partition=gputest
+#SBATCH --time=00:15:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=10
 #SBATCH --mem-per-cpu=8000
@@ -11,7 +11,6 @@
 #SBATCH -e logs/%j.err
 
 set -euo pipefail
-
 
 #module load gcc/8.3.0 cuda/10.1.168
 
@@ -23,23 +22,18 @@ module load gcc/8.3.0 cuda/10.1.168
 source venv_transformers_ner/bin/activate
 #python3 scripts/preprocess.py data/dev.txt.tmp $BERT_MODEL $MAX_LENGTH  > data/dev.txt
 
-
 #
 # default values
 batch_size=16
-learning_rate="0.001"
+learning_rate="4e-5"
 epochs=4
 max_seq_length=256
 #output_dir="./models/s800_1"
-DEBUG="false"
+
 
 for i in "$@"
 do
 case $i in
-    --debug=*)
-    DEBUG="${i#*=}"
-    shift # past argument=value
-    ;;
     -bs=*|--batch_size=*)
     batch_size="${i#*=}"
     shift # past argument=value
@@ -82,11 +76,9 @@ case $i in
 esac
 done
 
-if [ "$DEBUG" == "false" ]; then
-  rm -f latest.out latest.err
-  ln -s logs/$SLURM_JOBID.out latest.out
-  ln -s logs/$SLURM_JOBID.err latest.err
-fi
+rm -f latest.out latest.err
+ln -s logs/$SLURM_JOBID.out latest.out
+ln -s logs/$SLURM_JOBID.err latest.err
 
 #MAX_LENGTH=128
 #BERT_MODEL=bert-base-multilingual-cased
@@ -99,11 +91,11 @@ fi
 #OUTPUT_DIR="./models/s800_1"
 #BATCH_SIZE=32
 #NUM_EPOCHS=3
-SAVE_STEPS=750
+SAVE_STEPS=0
 SEED=1
 #DATADIR="./data/s800/conll/" #s800SmallTrain/" #/conll/"
 #LABELS="${DATADIR}labels.txt"
-LEARNING_RATE="0.001"
+#LEARNING_RATE="0.001"
 
 #rm -rf $OUTPUT_DIR
 
@@ -118,6 +110,8 @@ echo "labels: $labels"
 echo "model: $model"
 echo "learning rate: $learning_rate"
 echo "output dir: $output_dir"
+echo "savesteps: $SAVE_STEPS"
+echo "seed: $SEED"
 
 echo "Sample from conll:"
 head -5 $data_dir"train.txt"
@@ -137,7 +131,7 @@ if [ ! -f "$labels" ]; then
   exit 1
 fi
 
-if [ "$DEBUG" == "false" ]; then
+
 echo "Running python program"
 python3 run_tf_ner.py --data_dir $data_dir \
 --labels $labels \
@@ -155,7 +149,5 @@ python3 run_tf_ner.py --data_dir $data_dir \
 --learning_rate $learning_rate \
 
 #--from_pt True\
-else
-  echo "DEBUG END"
-fi
+
 
