@@ -41,6 +41,8 @@ transformers.logging.set_verbosity_info()
 
 logger = logging.getLogger(__name__)
 
+print('transformers version:', transformers.__version__)
+
 
 @dataclass
 class ModelArguments:

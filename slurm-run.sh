@@ -17,9 +17,12 @@ set -euo pipefail
 #rm test.log
 
 module purge
-module load python-data
-module load gcc/8.3.0 cuda/10.1.168
-source venv_transformers_ner/bin/activate
+#module load python-data
+module load tensorflow/2.2-hvd
+#module load gcc/8.3.0 cuda/10.1.168
+source tf2.2-transformers3.4/bin/activate
+#source venv/bin/activate
+#source venv_transformers_ner/bin/activate
 #python3 scripts/preprocess.py data/dev.txt.tmp $BERT_MODEL $MAX_LENGTH  > data/dev.txt
 
 #
@@ -28,12 +31,17 @@ batch_size=16
 learning_rate="4e-5"
 epochs=4
 max_seq_length=256
+model="./models/monologg/biobert_v1.1_pubmed/"
 #output_dir="./models/s800_1"
-
+grid="false"
 
 for i in "$@"
 do
 case $i in
+    -g=*|--grid=*)
+    grid="${i#*=}"
+    shift
+    ;;
     -bs=*|--batch_size=*)
     batch_size="${i#*=}"
     shift # past argument=value
@@ -76,9 +84,11 @@ case $i in
 esac
 done
 
-rm -f latest.out latest.err
-ln -s logs/$SLURM_JOBID.out latest.out
-ln -s logs/$SLURM_JOBID.err latest.err
+if [ $grid == "false" ]; then
+  rm -f latest.out latest.err
+  ln -s logs/$SLURM_JOBID.out latest.out
+  ln -s logs/$SLURM_JOBID.err latest.err
+fi
 
 #MAX_LENGTH=128
 #BERT_MODEL=bert-base-multilingual-cased
@@ -113,10 +123,10 @@ echo "output dir: $output_dir"
 echo "savesteps: $SAVE_STEPS"
 echo "seed: $SEED"
 
-echo "Sample from conll:"
-head -5 $data_dir"train.txt"
-echo "Sample from labels:"
-head -5 $labels
+#echo "Sample from conll:"
+#head -5 $data_dir"train.txt"
+#echo "Sample from labels:"
+#head -5 $labels
 
 if [ -f test.log ]; then
  rm test.log

@@ -1,3 +1,6 @@
+cancelMostRecentJobs.sh
+*.log
+tf2.2-transformers3.4
 RUNS.log
 *.ipynb
 !jupyter-for-debugging.ipynb

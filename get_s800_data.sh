@@ -22,10 +22,13 @@ if [ ! -d "$target_dir" ]; then
 	perl -p -i -e 's/[BI]-(Out-of-scope|Order|Class|Phylum|Kingdom)/O/' conll/*.tsv 
         
         ### If the model is using tab as separators, skip the rest
-        expand -t 1 conll/train.tsv > ../s800/train.txt
-        expand -t 1 conll/test.tsv > ../s800/test.txt
-        expand -t 1 conll/dev.tsv > ../s800/dev.txt    
-        cd ../s800
+        #expand -t 1 conll/train.tsv > ../s800/train.txt
+        #expand -t 1 conll/test.tsv > ../s800/test.txt
+        #expand -t 1 conll/dev.tsv > ../s800/dev.txt    
+        #mkdir ../s800
+        cp conll/* ../s800
+	
+	cd ../s800
         awk '{print $2}' * | sort | uniq > labels.txt
 else
 	echo "$target_dir already exists"

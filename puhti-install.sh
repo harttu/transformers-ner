@@ -23,11 +23,11 @@ echo "##MAKE VENV AND INSTALL IT                 ##"
 
 echo "Loading python-data module"
 module purge
-module load python-data
+module load tensorflow/2.2-hvd
 
 echo "Setting virtual environmenti ( this can't a while )"
-python3 -m venv venv_transformers_ner
-source venv_transformers_ner/bin/activate 
+python3 -m venv tf2.2-transformers3.4
+source venv_tf2.2-transformers/bin/activate 
 
 echo "Installing requirements"
 python3 -m pip install -r requirements.txt
